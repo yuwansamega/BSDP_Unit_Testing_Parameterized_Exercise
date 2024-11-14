@@ -1,4 +1,4 @@
-const { add, multiply, loginUser } = require('./index');
+const { add, multiply, loginUser, checkLoanEligibility } = require('./index');
 
 describe('Parameterized Tests for simple Math Functions', () => {
   test.each([
@@ -34,3 +34,22 @@ describe('Parameterized Tests for loginUser Function', () => {
     }
   );
 });
+
+describe('Parameterized Tests for checkLoanEligibility Function', () => {
+    test.each([
+      [700, 0.3, 60000, 'Loan approved'],
+      [600, 0.3, 60000, 'Credit score too low for loan approval'],
+      [700, 0.5, 60000, 'Debt-to-income ratio too high for loan approval'],
+      [700, 0.3, 40000, 'Income too low for large loan approval'],
+      [650, 0.4, 50000, 'Loan approved'],
+      [649, 0.4, 50000, 'Credit score too low for loan approval'],
+      [700, 0.39, 49999, 'Income too low for large loan approval'],
+    ])(
+      'checkLoanEligibility(%i, %f, %i) should return "%s"',
+      (creditScore, debtToIncomeRatio, income, expected) => {
+        expect(checkLoanEligibility(creditScore, debtToIncomeRatio, income)).toBe(
+          expected
+        );
+      }
+    );
+  });
